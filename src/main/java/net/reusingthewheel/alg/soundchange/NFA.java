@@ -38,4 +38,18 @@ public class NFA {
 
         return new NFA(start, end);
     }
+
+    /**
+     * Create an automaton that reaches its final state if the first and then the second does.
+     *
+     * @param first the first automaton
+     * @param second the second automaton
+     * @return an instance of NFA
+     */
+    public static NFA newConcatenateNFA(NFA first, NFA second) {
+        first.end.addEmptySymbolTransition(second.start);
+        first.end.setFinal(false);
+
+        return new NFA(first.start, second.end);
+    }
 }
