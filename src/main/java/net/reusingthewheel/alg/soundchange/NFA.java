@@ -73,4 +73,22 @@ public class NFA {
 
         return new NFA(start, end);
     }
+
+    /**
+     * Create an automaton that reaches its final state if the given automaton does it 0 or more times.
+     *
+     * @param automaton the given automaton
+     * @return an instance of NFA
+     */
+    public static NFA newKleeneClosureNFA(NFA automaton) {
+        var start = new State(false);
+        var end = new State(true);
+
+        start.addEmptySymbolTransition(automaton.start);
+        automaton.end.addEmptySymbolTransition(end);
+        automaton.end.addEmptySymbolTransition(automaton.start);
+        start.addEmptySymbolTransition(end);
+
+        return new NFA(start, end);
+    }
 }
