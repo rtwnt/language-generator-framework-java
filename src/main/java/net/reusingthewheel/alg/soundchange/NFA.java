@@ -1,5 +1,8 @@
 package net.reusingthewheel.alg.soundchange;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A nondeterministic finite state automaton
  */
@@ -91,4 +94,46 @@ public class NFA {
 
         return new NFA(start, end);
     }
+
+    /**
+     * Check if the automaton reaches its final state after consuming all of the given symbols.
+     *
+     * @param symbols a list of symbols.
+     * @return true if the final state has been reached.
+     */
+    public boolean isMatch(List<String> symbols) {
+        List<State> currentStates = new ArrayList<>();
+        addNextState(this.start, currentStates, new ArrayList<>());
+
+
+        for (String s : symbols) {
+            List<State> nextStates = new ArrayList<>();
+
+            currentStates.forEach( cs -> {
+                var nextState = cs.getSymbolTransitions().get(s);
+                if (nextState != null) {
+                    addNextState(nextState, nextStates, new ArrayList<>());
+                }
+            });
+
+            currentStates = nextStates;
+        }
+
+        return currentStates.stream().anyMatch(State::isFinal);
+    }
+
+    private void addNextState(State state, List<State> nextStates, List<State> visited) {
+        if (state.getEmptySymbolTransitions().isEmpty()) {
+            nextStates.add(state);
+            return;
+        }
+
+        state.getEmptySymbolTransitions().forEach(s -> {
+            if (!visited.contains(s)) {
+                visited.add(s);
+                addNextState(s, nextStates, visited);
+            }
+        });
+    }
+
 }
