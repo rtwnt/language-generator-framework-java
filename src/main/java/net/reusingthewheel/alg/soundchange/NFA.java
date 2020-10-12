@@ -93,6 +93,23 @@ public class NFA {
     }
 
     /**
+     * Create an automaton that reaches its final state if the given automaton does it 0 or 1 time.
+     *
+     * @param automaton the given automaton
+     * @return an instance of NFA
+     */
+    public static NFA newZeroOrOneNFA(NFA automaton) {
+        var start = new State();
+        var end = new State();
+
+        start.addEmptySymbolTransition(automaton.start);
+        automaton.end.addEmptySymbolTransition(end);
+        start.addEmptySymbolTransition(end);
+
+        return new NFA(start, end);
+    }
+
+    /**
      * Check if the automaton reaches its final state after consuming all of the given symbols.
      *
      * @param symbols a list of symbols.

@@ -73,4 +73,11 @@ class NFATests {
         var automaton = NFA.newKleeneClosureNFA(NFA.newSymbolNFA("a"));
         testAutomaton(automaton, symbols, result);
     }
+
+    @ParameterizedTest
+    @CsvSource({"true,a", "true,", "false,aa", "false,b", "false,ax", "false,xa"})
+    void testIsMatchForZeroOrOneNFA(boolean result, @ConvertWith(SymbolSequenceConverter.class) List<String> symbols) {
+        var automaton = NFA.newZeroOrOneNFA(NFA.newSymbolNFA("a"));
+        testAutomaton(automaton, symbols, result);
+    }
 }
