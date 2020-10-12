@@ -110,6 +110,16 @@ public class NFA {
     }
 
     /**
+     * Create an automaton that reaches its final state if the given automaton does it once or more.
+     *
+     * @param automaton the given automaton
+     * @return an instance of NFA
+     */
+    public static NFA newOneOrMoreNFA(NFA automaton) {
+        return newConcatenateNFA(automaton, newKleeneClosureNFA(automaton));
+    }
+
+    /**
      * Check if the automaton reaches its final state after consuming all of the given symbols.
      *
      * @param symbols a list of symbols.
