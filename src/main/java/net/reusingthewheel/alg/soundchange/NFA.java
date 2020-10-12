@@ -21,8 +21,8 @@ public class NFA {
      * @return an instance of NFA
      */
     public static NFA newEmptySymbolNFA() {
-        var start = new State(false);
-        var end = new State(true);
+        var start = new State();
+        var end = new State();
         start.addEmptySymbolTransition(end);
 
         return new NFA(start, end);
@@ -35,8 +35,8 @@ public class NFA {
      * @return an instance of NFA
      */
     public static NFA newSymbolNFA(String symbol) {
-        var start = new State(false);
-        var end = new State(true);
+        var start = new State();
+        var end = new State();
         start.addSymbolTransitions(symbol, end);
 
         return new NFA(start, end);
@@ -51,7 +51,6 @@ public class NFA {
      */
     public static NFA newConcatenateNFA(NFA first, NFA second) {
         first.end.addEmptySymbolTransition(second.start);
-        first.end.setFinal(false);
 
         return new NFA(first.start, second.end);
     }
@@ -64,15 +63,13 @@ public class NFA {
      * @return an instance of NFA
      */
     public static NFA newUnionNFA(NFA first, NFA second) {
-        var start = new State(false);
+        var start = new State();
         start.addEmptySymbolTransition(first.start);
         start.addEmptySymbolTransition(second.start);
 
-        var end = new State(true);
+        var end = new State();
         first.end.addEmptySymbolTransition(end);
-        first.end.setFinal(false);
         second.end.addEmptySymbolTransition(end);
-        second.end.setFinal(false);
 
         return new NFA(start, end);
     }
@@ -84,8 +81,8 @@ public class NFA {
      * @return an instance of NFA
      */
     public static NFA newKleeneClosureNFA(NFA automaton) {
-        var start = new State(false);
-        var end = new State(true);
+        var start = new State();
+        var end = new State();
 
         start.addEmptySymbolTransition(automaton.start);
         automaton.end.addEmptySymbolTransition(end);

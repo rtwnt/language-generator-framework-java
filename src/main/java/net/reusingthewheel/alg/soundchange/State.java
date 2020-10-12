@@ -10,17 +10,10 @@ import java.util.Set;
  */
 class State {
 
-    private Boolean isFinal;
     private Map<String, State> symbolTransitions;
     private Set<State> emptySymbolTransitions;
 
-    /**
-     * Create a new instance with given value of isFinal flag.
-     *
-     * @param isFinal specifies whether the state is a final one of an automaton it occurs in.
-     */
-    State(Boolean isFinal) {
-        this.isFinal = isFinal;
+    State() {
         this.symbolTransitions = new HashMap<>();
         this.emptySymbolTransitions = new HashSet<>();
     }
@@ -50,16 +43,7 @@ class State {
      * @return true if it is a final state.
      */
     Boolean isFinal() {
-        return isFinal;
-    }
-
-    /**
-     * Change the type of the state to final or non-final.
-     *
-     * @param isFinal a new value of the final state flag.
-     */
-    void setFinal(Boolean isFinal) {
-        this.isFinal = isFinal;
+        return symbolTransitions.isEmpty() && emptySymbolTransitions.isEmpty();
     }
 
     Map<String, State> getSymbolTransitions() {
