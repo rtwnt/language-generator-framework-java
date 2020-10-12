@@ -68,7 +68,7 @@ class NFATests {
     }
 
     @ParameterizedTest
-    @CsvSource({"true,a", "true,", "false,b", "false,ax", "false,xa"})
+    @CsvSource({"true,a", "true,", "true,aa", "false,b", "false,ax", "false,xa"})
     void testIsMatchForClosureNFA(boolean result, @ConvertWith(SymbolSequenceConverter.class) List<String> symbols) {
         var automaton = NFA.newKleeneClosureNFA(NFA.newSymbolNFA("a"));
         testAutomaton(automaton, symbols, result);
