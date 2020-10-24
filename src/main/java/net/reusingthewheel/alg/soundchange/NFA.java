@@ -1,7 +1,7 @@
 package net.reusingthewheel.alg.soundchange;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A nondeterministic finite state automaton
@@ -144,6 +144,64 @@ public class NFA {
         }
 
         return currentStates.stream().anyMatch(State::isFinal);
+    }
+
+    /**
+     * Get the subsequence of given sequence of symbols starting from the beginning of given sequence
+     * such as the automaton reaches it's final state after consuming the subsequence.
+     *
+     * @param symbols a list of symbols.
+     * @return MatchResult with information on whether the final state has been reached and the subsequence
+     * of symbols consumed in the process.
+     */
+    public MatchResult getMatchingPrefix(List<String> symbols) {
+        if (symbols.isEmpty()) {
+            throw new IllegalArgumentException("A sequence of symbols cannot be empty");
+        }
+        return getMatchingPrefix(symbols, this.start);
+    }
+
+    private MatchResult getMatchingPrefix(List<String> symbols, State currentState) {
+        final var result = new MatchResult();
+        if (currentState.isFinal() ) {
+            result.setMatchDetected(true);
+            return result;
+        }
+
+        final var allMatchResults = new ArrayList<MatchResult>();
+        allMatchResults.add(getMatchingPrefixByConsumingSymbol(symbols, currentState));
+        allMatchResults.addAll(
+                getAllMatchResultsFromEmptySymbolTransition(symbols, currentState)
+        );
+
+        return allMatchResults.stream()
+                .filter(MatchResult::isMatchDetected)
+                .max(Comparator.comparing(s -> s.getMatchedSymbols().size()))
+                .orElse(result);
+    }
+
+    private MatchResult getMatchingPrefixByConsumingSymbol(List<String> symbols, State currentState) {
+        MatchResult nextResult = new MatchResult();
+        if (symbols.isEmpty()) {
+            return nextResult;
+        }
+
+        final var currentSymbol = symbols.get(0);
+        final var nextState = currentState.getSymbolTransitions().get(currentSymbol);
+        if (nextState != null) {
+            List<String> nextSubsequence = symbols.subList(1, symbols.size());
+            nextResult = getMatchingPrefix(nextSubsequence, nextState);
+            nextResult.prependMatchingSymbol(currentSymbol);
+        }
+
+        return nextResult;
+    }
+
+    private List<MatchResult> getAllMatchResultsFromEmptySymbolTransition(List<String> symbols, State currentState) {
+        return currentState.getEmptySymbolTransitions()
+                .stream()
+                .map( n -> getMatchingPrefix(symbols, n))
+                .collect(Collectors.toList());
     }
 
     private void addNextState(State state, List<State> nextStates, List<State> visited) {
